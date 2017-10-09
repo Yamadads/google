@@ -20,8 +20,8 @@ class DocumentsLoader:
     @staticmethod
     def transform_documents(documents):
         def tokenize(line):
-            intab = '~!@#$%^&*()_+=`{}[]|/:;,.<>?"\\'
-            outtab = '                              '
+            intab = '·~!@#$%^&*()_+=`{}[]|/:;,.<>?"\\'
+            outtab = '                               '
             lower_line = line.lower()
             translated_line = lower_line.translate({ord(x): y for (x, y) in zip(intab, outtab)})
             translated_line = translated_line.replace(" - ", " ")

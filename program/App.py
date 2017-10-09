@@ -43,7 +43,17 @@ class App:
     def get_transformed_documents(self):
         if self.documents == {}:
             raise Exception("Documents list is empty")
-        return self.transformed_documents
+        trans_documents = []
+        for key, value in self.transformed_documents.items():
+            trans_documents.append(key)
+            for line in value:
+                new_line = ""
+                for word in line:
+                    new_line += word
+                    new_line += " "
+                trans_documents.append(new_line)
+            trans_documents.append("")
+        return trans_documents
 
     def get_transformed_terms(self):
         if not self.terms:
