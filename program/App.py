@@ -13,9 +13,22 @@ class App:
         self.documents = DocumentsLoader.load_documents(filename)
         self.transformed_documents = DocumentsLoader.transform_documents(self.documents)
 
+    def get_documents_list(self):
+        result_list = []
+        for doc in self.documents:
+            result_list.append(doc.key)
+            for line in doc:
+                result_list.append(line)
+                print(line)
+            result_list.append("")
+        return result_list
+
     def load_terms(self, filename):
         self.terms = TermsLoader.load_terms(filename)
         self.transformed_terms = TermsLoader.transform_terms(self.terms)
+
+    def get_terms_list(self):
+        return self.terms
 
     def get_transformed_documents_(self):
         return self.transformed_documents

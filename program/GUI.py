@@ -7,7 +7,7 @@ from program.App import App
 
 class GUI:
     def __init__(self):
-        self.app = App
+        self.app = App()
 
         # root
         self.root = tk.Tk()
@@ -54,19 +54,24 @@ class GUI:
 
     def load_documents(self):
         try:
-            filename = filedialog.askopenfilename(initialdir="/", title="Select documents file",
+            filename = filedialog.askopenfilename(initialdir="/home/", title="Select documents file",
                                               filetypes=(("txt files", "*.txt"), ("all files", "*.*")))
+            print(filename)
             self.app.load_documents(filename)
-            
-        except:
+            self.fill_listbox(self.app.get_documents_list(), "List of documents")
+        except Exception as e:
+            print(str(e))
             pass
 
     def load_terms(self):
         try:
-            filename = filedialog.askopenfilename(initialdir="/", title="Select terms file",
+            filename = filedialog.askopenfilename(initialdir="/home/", title="Select terms file",
                                               filetypes=(("txt files", "*.txt"), ("all files", "*.*")))
+            print(filename)
             self.app.load_terms(filename)
-        except:
+            self.fill_listbox(self.app.get_terms_list(), "List of terms")
+        except Exception as e:
+            print(str(e))
             pass
 
     def save_documents_file(self):
@@ -84,3 +89,12 @@ class GUI:
         text2save = text_to_save
         f.write(text2save)
         f.close()
+
+    def fill_listbox(self, list, list_name):
+        self.listbox.delete(0, tk.END)
+        self.listbox.insert(tk.END, list_name)
+        self.listbox.insert(tk.END, "")
+        for i in list:
+            self.listbox.insert(tk.END, i)
+            print(i)
+
