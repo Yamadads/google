@@ -14,6 +14,8 @@ class App:
         self.transformed_documents = DocumentsLoader.transform_documents(self.documents)
 
     def get_documents_list(self):
+        if self.documents == {}:
+            raise Exception("Documents list is empty")
         result_list = []
         for key, value in self.documents.items():
             result_list.append(key)
@@ -27,12 +29,18 @@ class App:
         self.transformed_terms = TermsLoader.transform_terms(self.terms)
 
     def get_terms_list(self):
+        if not self.terms:
+            raise Exception("Terms list is empty")
         return self.terms
 
-    def get_transformed_documents_(self):
+    def get_transformed_documents(self):
+        if self.documents == {}:
+            raise Exception("Documents list is empty")
         return self.transformed_documents
 
     def get_transformed_terms(self):
+        if not self.terms:
+            raise Exception("Terms list is empty")
         return self.transformed_terms
 
     def query(self, query):

@@ -3,6 +3,7 @@
 import tkinter as tk
 from tkinter import filedialog
 from program.App import App
+from tkinter import messagebox
 
 
 class GUI:
@@ -60,8 +61,8 @@ class GUI:
             self.app.load_documents(filename)
             self.fill_listbox(self.app.get_documents_list(), "List of documents")
         except Exception as e:
+            messagebox.showinfo("Error", e)
             print(str(e))
-            pass
 
     def load_terms(self):
         try:
@@ -71,16 +72,24 @@ class GUI:
             self.app.load_terms(filename)
             self.fill_listbox(self.app.get_terms_list(), "List of terms")
         except Exception as e:
+            messagebox.showinfo("Error", e)
             print(str(e))
-            pass
 
     def save_documents_file(self):
-        documents = self.app.get_transformed_documents()
-        self.save_file(documents)
+        try:
+            documents = self.app.get_transformed_documents()
+            self.save_file(documents)
+        except Exception as e:
+            messagebox.showinfo("Error", e)
+            print(str(e))
 
     def save_terms_file(self):
-        terms = self.app.get_transformed_documents()
-        self.save_file(terms)
+        try:
+            terms = self.app.get_transformed_terms()
+            self.save_file(terms)
+        except Exception as e:
+            messagebox.showinfo("Error", e)
+            print(str(e))
 
     def save_file(self, text_to_save):
         f = filedialog.asksaveasfile(mode='w', defaultextension=".txt")
@@ -96,5 +105,4 @@ class GUI:
         self.listbox.insert(tk.END, "")
         for i in list:
             self.listbox.insert(tk.END, i)
-            # print(i)
 
