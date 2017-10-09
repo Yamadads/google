@@ -4,8 +4,8 @@ from program.TermsLoader import TermsLoader
 
 class App:
     def __init__(self):
-        self.documents = []
-        self.transformed_documents = []
+        self.documents = {}
+        self.transformed_documents = {}
         self.terms = []
         self.transformed_terms = []
 
@@ -15,11 +15,10 @@ class App:
 
     def get_documents_list(self):
         result_list = []
-        for doc in self.documents:
-            result_list.append(doc.key)
-            for line in doc:
+        for key, value in self.documents.items():
+            result_list.append(key)
+            for line in value:
                 result_list.append(line)
-                print(line)
             result_list.append("")
         return result_list
 

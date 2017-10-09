@@ -25,7 +25,7 @@ class GUI:
         self.load_documents_button = tk.Button(self.buttons_frame, text='Load documents', command=self.load_documents)
         self.load_documents_button.pack(side="left", fill="both", expand=True)
 
-        self.load_terms_button = tk.Button(self.buttons_frame, text='Load terms', command=self.load_documents)
+        self.load_terms_button = tk.Button(self.buttons_frame, text='Load terms', command=self.load_terms)
         self.load_terms_button.pack(side="left", fill="both", expand=True)
 
         self.save_terms_button = tk.Button(self.buttons_frame, text='Save transformed terms',
@@ -54,7 +54,7 @@ class GUI:
 
     def load_documents(self):
         try:
-            filename = filedialog.askopenfilename(initialdir="/home/", title="Select documents file",
+            filename = filedialog.askopenfilename(initialdir="/home/debian/Pobrane/ezi/google/google/input", title="Select documents file",
                                               filetypes=(("txt files", "*.txt"), ("all files", "*.*")))
             print(filename)
             self.app.load_documents(filename)
@@ -65,7 +65,7 @@ class GUI:
 
     def load_terms(self):
         try:
-            filename = filedialog.askopenfilename(initialdir="/home/", title="Select terms file",
+            filename = filedialog.askopenfilename(initialdir="/home/debian/Pobrane/ezi/google/google/input", title="Select terms file",
                                               filetypes=(("txt files", "*.txt"), ("all files", "*.*")))
             print(filename)
             self.app.load_terms(filename)
@@ -96,5 +96,5 @@ class GUI:
         self.listbox.insert(tk.END, "")
         for i in list:
             self.listbox.insert(tk.END, i)
-            print(i)
+            # print(i)
 
