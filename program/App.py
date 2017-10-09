@@ -8,6 +8,13 @@ class App:
         self.transformed_documents = {}
         self.terms = []
         self.transformed_terms = []
+        self.stopwords = []
+
+    def load_stopwords(self, filename):
+        self.stopwords = TermsLoader.load_stopwords(filename)
+
+    def get_stopwords(self):
+        return self.stopwords
 
     def load_documents(self, filename):
         self.documents = DocumentsLoader.load_documents(filename)

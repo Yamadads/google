@@ -13,7 +13,7 @@ class GUI:
         # root
         self.root = tk.Tk()
         self.root.title('°º¤ø,¸¸,ø¤º°  google  °º¤ø,¸¸,ø¤º°')
-        self.root.minsize(700, 500)
+        self.root.minsize(750, 500)
 
         # top label
         self.label = tk.Label(self.root, text="Welcome in google!")
@@ -23,19 +23,26 @@ class GUI:
         self.buttons_frame = tk.Frame(self.root)
         self.buttons_frame.pack(side="top", fill="both", ipady=5, expand=False)
 
+        self.load_stopwards_button = tk.Button(self.buttons_frame, text='Load stopwords', command=self.load_stopwords)
+        self.load_stopwards_button.pack(side="left", fill="both", expand=True)
+
         self.load_documents_button = tk.Button(self.buttons_frame, text='Load documents', command=self.load_documents)
         self.load_documents_button.pack(side="left", fill="both", expand=True)
 
         self.load_terms_button = tk.Button(self.buttons_frame, text='Load terms', command=self.load_terms)
         self.load_terms_button.pack(side="left", fill="both", expand=True)
 
-        self.save_terms_button = tk.Button(self.buttons_frame, text='Save transformed terms',
-                                           command=self.save_terms_file)
-        self.save_terms_button.pack(side="left", fill="both", expand=True)
+        self.get_terms_button = tk.Button(self.buttons_frame, text='Get trans. terms',
+                                           command=self.get_terms)
+        self.get_terms_button.pack(side="left", fill="both", expand=True)
 
-        self.save_documents_button = tk.Button(self.buttons_frame, text='Save transformed documents',
-                                               command=self.save_documents_file)
-        self.save_documents_button.pack(side="left", fill="both", expand=True)
+        self.get_documents_button = tk.Button(self.buttons_frame, text='Get trans. documents',
+                                               command=self.get_documents)
+        self.get_documents_button.pack(side="left", fill="both", expand=True)
+
+        self.save_file = tk.Button(self.buttons_frame, text='Save list',
+                                               command=self.save_file)
+        self.save_file.pack(side="left", fill="both", expand=True)
 
         # enter bar
         self.enter_frame = tk.Frame(self.root)
@@ -44,7 +51,7 @@ class GUI:
         self.edit = tk.Entry(self.enter_frame, width=80)
         self.edit.pack(side="left", fill="both", expand=True)
 
-        self.enter_button = tk.Button(self.enter_frame, text='Query', command=self.save_documents_file)
+        self.enter_button = tk.Button(self.enter_frame, text='Query', command=self.save_file)
         self.enter_button.pack(ipady=1, side="left", fill="both", expand=True)
 
         # listbox
@@ -53,10 +60,23 @@ class GUI:
 
         self.root.mainloop()
 
+    def load_stopwords(self):
+        try:
+            filename = filedialog.askopenfilename(initialdir="/home/debian/Pobrane/ezi/google/google/input",
+                                                  title="Select documents file",
+                                                  filetypes=(("txt files", "*.txt"), ("all files", "*.*")))
+            print(filename)
+            self.app.load_stopwords(filename)
+            self.fill_listbox(self.app.get_stopwords(), "List of stopwords")
+        except Exception as e:
+            messagebox.showinfo("Error", e)
+            print(str(e))
+
     def load_documents(self):
         try:
-            filename = filedialog.askopenfilename(initialdir="/home/debian/Pobrane/ezi/google/google/input", title="Select documents file",
-                                              filetypes=(("txt files", "*.txt"), ("all files", "*.*")))
+            filename = filedialog.askopenfilename(initialdir="/home/debian/Pobrane/ezi/google/google/input",
+                                                  title="Select documents file",
+                                                  filetypes=(("txt files", "*.txt"), ("all files", "*.*")))
             print(filename)
             self.app.load_documents(filename)
             self.fill_listbox(self.app.get_documents_list(), "List of documents")
@@ -66,8 +86,9 @@ class GUI:
 
     def load_terms(self):
         try:
-            filename = filedialog.askopenfilename(initialdir="/home/debian/Pobrane/ezi/google/google/input", title="Select terms file",
-                                              filetypes=(("txt files", "*.txt"), ("all files", "*.*")))
+            filename = filedialog.askopenfilename(initialdir="/home/debian/Pobrane/ezi/google/google/input",
+                                                  title="Select terms file",
+                                                  filetypes=(("txt files", "*.txt"), ("all files", "*.*")))
             print(filename)
             self.app.load_terms(filename)
             self.fill_listbox(self.app.get_terms_list(), "List of terms")
@@ -75,28 +96,31 @@ class GUI:
             messagebox.showinfo("Error", e)
             print(str(e))
 
-    def save_documents_file(self):
+    def get_documents(self):
         try:
             documents = self.app.get_transformed_documents()
-            self.save_file(documents)
+            self.fill_listbox(documents, "List of transfered documents")
         except Exception as e:
             messagebox.showinfo("Error", e)
             print(str(e))
 
-    def save_terms_file(self):
+    def get_terms(self):
         try:
             terms = self.app.get_transformed_terms()
-            self.save_file(terms)
+            self.fill_listbox(terms, "List of transfered terms")
         except Exception as e:
             messagebox.showinfo("Error", e)
             print(str(e))
 
-    def save_file(self, text_to_save):
+    def save_file(self):
         f = filedialog.asksaveasfile(mode='w', defaultextension=".txt")
         if f is None:
             return
-        text2save = text_to_save
-        f.write(text2save)
+        text_to_save = ""
+        for line in self.listbox.get(0, tk.END):
+            text_to_save += line
+            text_to_save += "\n"
+        f.write(text_to_save)
         f.close()
 
     def fill_listbox(self, list, list_name):
@@ -105,4 +129,3 @@ class GUI:
         self.listbox.insert(tk.END, "")
         for i in list:
             self.listbox.insert(tk.END, i)
-

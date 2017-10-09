@@ -19,4 +19,21 @@ class DocumentsLoader:
 
     @staticmethod
     def transform_documents(documents):
-        return documents
+        def tokenize(line):
+            intab = '~!@#$%^&*()_+=`{}[]|/:;,.<>?"\\'
+            outtab = '                              '
+            lower_line = line.lower()
+            translated_line = lower_line.translate({ord(x): y for (x, y) in zip(intab, outtab)})
+            translated_line = translated_line.replace(" - ", " ")
+            tokens = translated_line.split();
+            return tokens;
+
+        transformed_documents = {}
+        for key, value in documents.items():
+            tokens_lines = []
+            tokens_lines.append(tokenize(key))
+            for line in value:
+                tokens_lines.append(tokenize(line))
+            transformed_documents[key] = tokens_lines
+        return transformed_documents
+
