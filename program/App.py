@@ -9,6 +9,7 @@ class App:
         self.terms = []
         self.transformed_terms = []
         self.stopwords = []
+        self.tfidf = {}
 
     def load_stopwords(self, filename):
         self.stopwords = TermsLoader.load_stopwords(filename)
