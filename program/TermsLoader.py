@@ -1,3 +1,5 @@
+from .Tokenizer import Tokenizer
+
 class TermsLoader:
     @staticmethod
     def load_terms(filename):
@@ -9,8 +11,12 @@ class TermsLoader:
         return terms
 
     @staticmethod
-    def transform_terms(terms):
-        return terms
+    def transform_terms(terms, stopwords):
+        transformed_terms = []
+        for line in terms:
+            transformed_terms += Tokenizer.tokenize(line, stopwords)
+        unique_transformed_terms = list(set(transformed_terms))
+        return unique_transformed_terms
 
     @staticmethod
     def load_stopwords(filename):
