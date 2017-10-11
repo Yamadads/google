@@ -1,5 +1,6 @@
 from .Tokenizer import Tokenizer
 
+
 class DocumentsLoader:
     @staticmethod
     def load_documents(filename):
@@ -29,4 +30,3 @@ class DocumentsLoader:
                 tokens_lines.append(Tokenizer.tokenize(line, stopwords))
             transformed_documents[key] = tokens_lines
         return transformed_documents
-

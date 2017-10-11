@@ -18,7 +18,8 @@ class Tokenizer:
 
         def stemming(tokens_list):
             stemmer = PorterStemmer()
-            tokens_stems = [stemmer.stem(token, 0, len(token) - 1) for token in tokens_list if stemmer.stem(token, 0, len(token) - 1) != ""]
+            tokens_stems = [stemmer.stem(token, 0, len(token) - 1) for token in tokens_list if
+                            stemmer.stem(token, 0, len(token) - 1) != ""]
             return tokens_stems
 
         cleaned_text = clean_text(text)

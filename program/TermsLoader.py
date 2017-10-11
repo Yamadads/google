@@ -1,5 +1,6 @@
 from .Tokenizer import Tokenizer
 
+
 class TermsLoader:
     @staticmethod
     def load_terms(filename):
