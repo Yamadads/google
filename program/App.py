@@ -1,5 +1,7 @@
 from program.DocumentsLoader import DocumentsLoader
 from program.TermsLoader import TermsLoader
+from program.TFIDF import TFIDF
+from program.QueryHandler import QueryHandler
 
 
 class App:
@@ -10,6 +12,8 @@ class App:
         self.transformed_terms = []
         self.stopwords = []
         self.tfidf = {}
+        self.documents_vec_len = {}
+        self.idf_terms = {}
 
     def load_stopwords(self, filename):
         self.stopwords = TermsLoader.load_stopwords(filename)
@@ -18,14 +22,17 @@ class App:
         return self.stopwords
 
     def load_documents(self, filename):
+        if not self.terms:
+            raise Exception("Please load terms first")
         self.documents = DocumentsLoader.load_documents(filename)
         self.transformed_documents = DocumentsLoader.transform_documents(self.documents, self.stopwords)
+        self.tfidf, self.documents_vec_len, self.idf_terms = TFIDF.create_tfidf(self.terms, self.transformed_documents)
 
     def get_documents_list(self):
         if self.documents == {}:
             raise Exception("Documents list is empty")
         result_list = []
-        for key, value in self.documents.items():
+        for key, value in sorted(self.documents.items()):
             result_list.append(key)
             for line in value:
                 result_list.append(line)
@@ -39,13 +46,13 @@ class App:
     def get_terms_list(self):
         if not self.terms:
             raise Exception("Terms list is empty")
-        return self.terms
+        return sorted(self.terms)
 
     def get_transformed_documents(self):
         if self.documents == {}:
             raise Exception("Documents list is empty")
         trans_documents = []
-        for key, value in self.transformed_documents.items():
+        for key, value in sorted(self.transformed_documents.items()):
             trans_documents.append(key)
             for line in value:
                 new_line = ""
@@ -59,7 +66,9 @@ class App:
     def get_transformed_terms(self):
         if not self.terms:
             raise Exception("Terms list is empty")
-        return self.transformed_terms
+        return sorted(self.transformed_terms)
 
     def query(self, query):
-        print("list of documents")
+        if not self.tfidf:
+            raise Exception("Documents list is empty")
+        return QueryHandler.query(query, self.tfidf, self.documents_vec_len, self.stopwords, self.idf_terms)

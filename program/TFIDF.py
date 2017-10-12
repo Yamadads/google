@@ -15,6 +15,8 @@ class TFIDF:
                     if term in doc_tf:
                         doc_tf[term] += 1
             max_value = max(doc_tf.values())
+            if max_value == 0:
+                return doc_tf
             for key in doc_tf:
                 doc_tf[key] /= max_value
             return doc_tf
@@ -35,7 +37,10 @@ class TFIDF:
                         term_doc_count[term] += 1
             idf = {}
             for term in documents_terms:
-                idf[term] = log(len(tf_documents) / term_doc_count[term], 2)
+                if term_doc_count[term] == 0:
+                    idf[term] = 0
+                else:
+                    idf[term] = log(len(tf_documents) / term_doc_count[term], 2)
             return idf
 
         def tfidf_for_document(tf_document, idf):
@@ -64,4 +69,4 @@ class TFIDF:
         tfidf_repr = tfidf_for_documents(tf_repr, idf_terms_rep)
         documents_vectors_len = doc_vectors_len(tfidf_repr)
 
-        return tfidf_repr, documents_vectors_len
+        return tfidf_repr, documents_vectors_len, idf_terms_rep

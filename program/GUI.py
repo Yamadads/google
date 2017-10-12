@@ -26,11 +26,11 @@ class GUI:
         self.load_stopwards_button = tk.Button(self.buttons_frame, text='Load \nstopwords', command=self.load_stopwords)
         self.load_stopwards_button.pack(side="left", fill="both", expand=True)
 
-        self.load_documents_button = tk.Button(self.buttons_frame, text='Load \ndocuments', command=self.load_documents)
-        self.load_documents_button.pack(side="left", fill="both", expand=True)
-
         self.load_terms_button = tk.Button(self.buttons_frame, text='Load \nterms', command=self.load_terms)
         self.load_terms_button.pack(side="left", fill="both", expand=True)
+
+        self.load_documents_button = tk.Button(self.buttons_frame, text='Load \ndocuments', command=self.load_documents)
+        self.load_documents_button.pack(side="left", fill="both", expand=True)
 
         self.get_t_terms_button = tk.Button(self.buttons_frame, text='Show \ntrans. terms',
                                             command=self.show_t_terms)
@@ -58,8 +58,9 @@ class GUI:
 
         self.edit = tk.Entry(self.enter_frame, width=80)
         self.edit.pack(side="left", fill="both", expand=True)
+        self.edit.bind('<Return>', lambda _:self.query())
 
-        self.enter_button = tk.Button(self.enter_frame, text='Query', command=self.save_file)
+        self.enter_button = tk.Button(self.enter_frame, text='Query', command=self.query)
         self.enter_button.pack(ipady=1, side="left", fill="both", expand=True)
 
         # listbox
@@ -67,6 +68,7 @@ class GUI:
         self.listbox.pack(ipady=1, ipadx=1, side="left", fill="both", expand=True)
 
         self.root.mainloop()
+
 
     def load_stopwords(self):
         try:
@@ -157,3 +159,13 @@ class GUI:
         self.listbox.insert(tk.END, "")
         for i in list:
             self.listbox.insert(tk.END, i)
+
+    def query(self):
+        try:
+            if self.edit.get() == "":
+                return
+            query_result = self.app.query(self.edit.get())
+            self.fill_listbox(query_result, "Search results")
+        except Exception as e:
+            messagebox.showinfo("Error", e)
+            print(str(e))
