@@ -26,7 +26,7 @@ class App:
             raise Exception("Please load terms first")
         self.documents = DocumentsLoader.load_documents(filename)
         self.transformed_documents = DocumentsLoader.transform_documents(self.documents, self.stopwords)
-        self.tfidf, self.documents_vec_len, self.idf_terms = TFIDF.create_tfidf(self.terms, self.transformed_documents)
+        self.tfidf, self.documents_vec_len, self.idf_terms = TFIDF.create_tfidf(self.transformed_terms, self.transformed_documents)
 
     def get_documents_list(self):
         if self.documents == {}:

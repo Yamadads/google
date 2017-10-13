@@ -5,11 +5,11 @@ class Tokenizer:
     @staticmethod
     def tokenize(text, stopwords):
         def clean_text(text_to_clean):
-            intab = '·~!@#$%^&*()_+=`{}[]|/:;,.<>?"\\'
-            outtab = '                               '
+            intab = '-·~!@#$%^&*()_+=`{}[]|/:;,.<>?"\\'
+            outtab = '                                '
             processed_text = text_to_clean.lower()
             processed_text = processed_text.translate({ord(x): y for (x, y) in zip(intab, outtab)})
-            processed_text = processed_text.replace(" - ", " ")
+            # processed_text = processed_text.replace(" - ", " ")
             return processed_text
 
         def remove_stopwords(tokens_list, stopwords_list):

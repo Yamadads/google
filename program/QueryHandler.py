@@ -8,22 +8,22 @@ class QueryHandler:
         def prepare_query():
             query = {}
             query_tokens = Tokenizer.tokenize(query_text, stopwords)
-            print(query_tokens)
-            print(idf_terms)
+            # print(query_tokens)
+            # print(idf_terms)
             for term in idf_terms:
                 query[term] = 0
             for token in query_tokens:
                 if token in query:
                     query[token] += 1
             max_value = max(query.values())
-            print(max_value)
+            # print(max_value)
             if max_value == 0:
                 return query
             for key in query:
                 query[key] /= max_value
             for key in query:
                 query[key] *= idf_terms[key]
-            print(query)
+            # print(query)
             return query
 
         def calc_query_len(query):
