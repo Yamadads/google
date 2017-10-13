@@ -54,7 +54,7 @@ class QueryHandler:
         def prepare_response_list(similarities):
             resp_list = []
             for w in sorted(similarities.items(), key=lambda x: x[1], reverse=True):
-                resp_list.append(w[0] + "        " + str(w[1]))
+                resp_list.append("{0:.5f}".format(w[1]) + "  " + w[0])
             return resp_list
 
         tfidf_query = prepare_query()
