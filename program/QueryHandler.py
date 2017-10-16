@@ -57,7 +57,16 @@ class QueryHandler:
                 resp_list.append("{0:.5f}".format(w[1]) + "  " + w[0])
             return resp_list
 
+        def prepare_response_status_list(similarities):
+            resp_list = {}
+            row = 0
+            for w in sorted(similarities.items(), key=lambda x: x[1], reverse=True):
+                resp_list[row] = (w[0], w[1], 'not_selected')
+                row += 1
+            return resp_list
+
         tfidf_query = prepare_query()
         documents_similarities = calc_similarities(tfidf_query, documents_tfidf_rep, documents_vec_len)
         response_list = prepare_response_list(documents_similarities)
-        return response_list
+        response_status_list = prepare_response_status_list(documents_similarities)
+        return response_list, response_status_list

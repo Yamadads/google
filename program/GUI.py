@@ -7,6 +7,7 @@ from tkinter import messagebox
 
 settings_string = "app:settings"
 
+
 class GUI:
     def __init__(self):
         self.app = App()
@@ -67,7 +68,9 @@ class GUI:
         # listbox
         self.listbox = tk.Listbox(self.root, width=100)
         self.listbox.pack(ipady=1, ipadx=1, side="left", fill="both", expand=True)
+        self.listbox.bind('<Double-Button-1>', self.on_select_listbox)
 
+        self.documents_status = {}
         self.root.mainloop()
 
     def load_stopwords(self):
@@ -80,6 +83,7 @@ class GUI:
             print(filename)
             self.app.load_stopwords(filename)
             self.fill_listbox(self.app.get_stopwords(), "List of stopwords")
+            self.documents_status = {}
         except Exception as e:
             messagebox.showinfo("Error", e)
             print(str(e))
@@ -94,6 +98,7 @@ class GUI:
             print(filename)
             self.app.load_documents(filename)
             self.fill_listbox(self.app.get_documents_list(), "List of documents")
+            self.documents_status = {}
         except Exception as e:
             messagebox.showinfo("Error", e)
             print(str(e))
@@ -101,6 +106,7 @@ class GUI:
     def show_documents(self):
         try:
             self.fill_listbox(self.app.get_documents_list(), "List of documents")
+            self.documents_status = {}
         except Exception as e:
             messagebox.showinfo("Error", e)
             print(str(e))
@@ -108,6 +114,7 @@ class GUI:
     def show_terms(self):
         try:
             self.fill_listbox(self.app.get_terms_list(), "List of terms")
+            self.documents_status = {}
         except Exception as e:
             messagebox.showinfo("Error", e)
             print(str(e))
@@ -122,6 +129,7 @@ class GUI:
             print(filename)
             self.app.load_terms(filename)
             self.fill_listbox(self.app.get_terms_list(), "List of terms")
+            self.documents_status = {}
         except Exception as e:
             messagebox.showinfo("Error", e)
             print(str(e))
@@ -130,6 +138,7 @@ class GUI:
         try:
             documents = self.app.get_transformed_documents()
             self.fill_listbox(documents, "List of transfered documents")
+            self.documents_status = {}
         except Exception as e:
             messagebox.showinfo("Error", e)
             print(str(e))
@@ -138,6 +147,7 @@ class GUI:
         try:
             terms = self.app.get_transformed_terms()
             self.fill_listbox(terms, "List of transfered terms")
+            self.documents_status = {}
         except Exception as e:
             messagebox.showinfo("Error", e)
             print(str(e))
@@ -160,6 +170,26 @@ class GUI:
         for i in list:
             self.listbox.insert(tk.END, i)
 
+    def on_select_listbox(self, event):
+        if self.documents_status == {}:
+            return
+        widget = event.widget
+        list_index = int(widget.curselection()[0])
+        document_index = list_index - 2
+        if list_index <2:
+            return
+        (doc_title, value, status) = self.documents_status[document_index]
+        print(doc_title)
+        if status == 'not_selected':
+            widget.itemconfig(list_index, {'bg': '#b3fa87'})
+            self.documents_status[document_index] = (doc_title, value, 'good')
+        if status == 'good':
+            widget.itemconfig(list_index, {'bg': '#feabab'})
+            self.documents_status[document_index] = (doc_title, value, 'bad')
+        elif status == 'bad':
+            widget.itemconfig(list_index, {'bg': '#ffffff'})
+            self.documents_status[document_index] = (doc_title, value, 'not_selected')
+
     def query(self):
         try:
             if self.edit.get() == "":
@@ -167,8 +197,9 @@ class GUI:
             if settings_string in self.edit.get():
                 settings_request_result = self.app.settings_request(self.edit.get())
                 self.fill_listbox(settings_request_result, "Settings")
+                self.documents_status = {}
             else:
-                query_result = self.app.query(self.edit.get())
+                query_result, self.documents_status = self.app.query(self.edit.get())
                 self.fill_listbox(query_result, "Search results")
         except Exception as e:
             messagebox.showinfo("Error", e)
