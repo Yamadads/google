@@ -3,6 +3,7 @@ from program.TermsLoader import TermsLoader
 from program.TFIDF import TFIDF
 from program.QueryHandler import QueryHandler
 from program.Settings import Settings
+from program.RelevanceFeedback import RelevanceFeedback
 
 
 class App:
@@ -80,4 +81,18 @@ class App:
     def query(self, query):
         if not self.tfidf:
             raise Exception("Documents list is empty")
-        return QueryHandler.query(query, self.tfidf, self.documents_vec_len, self.stopwords, self.idf_terms)
+        return QueryHandler.query(query, self.tfidf, self.documents_vec_len, self.stopwords, self.idf_terms, None)
+
+    def relevance_feedback_query(self, query, documents_status):
+        if not self.tfidf:
+            raise Exception("Documents list is empty")
+        good_docs = []
+        bad_docs = []
+        for key, value in documents_status.items():
+            (doc_title, doc_value, doc_status) = value
+            if doc_status == 'good':
+                good_docs.append(doc_title)
+            if doc_status == 'bad':
+                bad_docs.append(doc_title)
+        new_query = RelevanceFeedback.create_new_query(query, good_docs, bad_docs, self.settings, self.transformed_documents, self.stopwords, self.idf_terms)
+        return QueryHandler.query(None, self.tfidf, self.documents_vec_len, self.stopwords, self.idf_terms, new_query)

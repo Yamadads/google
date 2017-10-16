@@ -62,7 +62,7 @@ class GUI:
         self.edit.pack(side="left", fill="both", expand=True)
         self.edit.bind('<Return>', lambda _: self.query())
 
-        self.enter_button = tk.Button(self.enter_frame, text='Query', command=self.query)
+        self.enter_button = tk.Button(self.enter_frame, text='Relevance Feedback Query', command=self.relevance_feedback_query)
         self.enter_button.pack(ipady=1, side="left", fill="both", expand=True)
 
         # listbox
@@ -179,7 +179,6 @@ class GUI:
         if list_index <2:
             return
         (doc_title, value, status) = self.documents_status[document_index]
-        print(doc_title)
         if status == 'not_selected':
             widget.itemconfig(list_index, {'bg': '#b3fa87'})
             self.documents_status[document_index] = (doc_title, value, 'good')
@@ -200,6 +199,19 @@ class GUI:
                 self.documents_status = {}
             else:
                 query_result, self.documents_status = self.app.query(self.edit.get())
+                self.fill_listbox(query_result, "Search results")
+        except Exception as e:
+            messagebox.showinfo("Error", e)
+            print(str(e))
+
+    def relevance_feedback_query(self):
+        try:
+            if self.edit.get() == "":
+                return
+            if settings_string in self.edit.get():
+                return
+            else:
+                query_result, self.documents_status = self.app.relevance_feedback_query(self.edit.get(), self.documents_status)
                 self.fill_listbox(query_result, "Search results")
         except Exception as e:
             messagebox.showinfo("Error", e)

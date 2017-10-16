@@ -4,7 +4,7 @@ from math import sqrt
 
 class QueryHandler:
     @staticmethod
-    def query(query_text, documents_tfidf_rep, documents_vec_len, stopwords, idf_terms):
+    def query(query_text, documents_tfidf_rep, documents_vec_len, stopwords, idf_terms, query_prepared):
         def prepare_query():
             query = {}
             query_tokens = Tokenizer.tokenize(query_text, stopwords)
@@ -65,7 +65,10 @@ class QueryHandler:
                 row += 1
             return resp_list
 
-        tfidf_query = prepare_query()
+        if query_text is not None:
+            tfidf_query = prepare_query()
+        if query_prepared is not None:
+            tfidf_query = query_prepared
         documents_similarities = calc_similarities(tfidf_query, documents_tfidf_rep, documents_vec_len)
         response_list = prepare_response_list(documents_similarities)
         response_status_list = prepare_response_status_list(documents_similarities)
