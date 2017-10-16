@@ -5,6 +5,7 @@ from tkinter import filedialog
 from program.App import App
 from tkinter import messagebox
 
+settings_string = "app:settings"
 
 class GUI:
     def __init__(self):
@@ -58,7 +59,7 @@ class GUI:
 
         self.edit = tk.Entry(self.enter_frame, width=80)
         self.edit.pack(side="left", fill="both", expand=True)
-        self.edit.bind('<Return>', lambda _:self.query())
+        self.edit.bind('<Return>', lambda _: self.query())
 
         self.enter_button = tk.Button(self.enter_frame, text='Query', command=self.query)
         self.enter_button.pack(ipady=1, side="left", fill="both", expand=True)
@@ -68,7 +69,6 @@ class GUI:
         self.listbox.pack(ipady=1, ipadx=1, side="left", fill="both", expand=True)
 
         self.root.mainloop()
-
 
     def load_stopwords(self):
         try:
@@ -164,8 +164,12 @@ class GUI:
         try:
             if self.edit.get() == "":
                 return
-            query_result = self.app.query(self.edit.get())
-            self.fill_listbox(query_result, "Search results")
+            if settings_string in self.edit.get():
+                settings_request_result = self.app.settings_request(self.edit.get())
+                self.fill_listbox(settings_request_result, "Settings")
+            else:
+                query_result = self.app.query(self.edit.get())
+                self.fill_listbox(query_result, "Search results")
         except Exception as e:
             messagebox.showinfo("Error", e)
             print(str(e))

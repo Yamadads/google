@@ -2,6 +2,7 @@ from program.DocumentsLoader import DocumentsLoader
 from program.TermsLoader import TermsLoader
 from program.TFIDF import TFIDF
 from program.QueryHandler import QueryHandler
+from program.Settings import Settings
 
 
 class App:
@@ -14,6 +15,7 @@ class App:
         self.tfidf = {}
         self.documents_vec_len = {}
         self.idf_terms = {}
+        self.settings = Settings()
 
     def load_stopwords(self, filename):
         self.stopwords = TermsLoader.load_stopwords(filename)
@@ -26,7 +28,8 @@ class App:
             raise Exception("Please load terms first")
         self.documents = DocumentsLoader.load_documents(filename)
         self.transformed_documents = DocumentsLoader.transform_documents(self.documents, self.stopwords)
-        self.tfidf, self.documents_vec_len, self.idf_terms = TFIDF.create_tfidf(self.transformed_terms, self.transformed_documents)
+        self.tfidf, self.documents_vec_len, self.idf_terms = TFIDF.create_tfidf(self.transformed_terms,
+                                                                                self.transformed_documents)
 
     def get_documents_list(self):
         if self.documents == {}:
@@ -67,6 +70,12 @@ class App:
         if not self.terms:
             raise Exception("Terms list is empty")
         return sorted(self.transformed_terms)
+
+    def settings_request(self, request):
+        if request == 'app:settings':
+            return self.settings.get_settings_list()
+        else:
+            return self.settings.set_settings_values(request)
 
     def query(self, query):
         if not self.tfidf:
