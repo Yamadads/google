@@ -62,8 +62,8 @@ class GUI:
         self.edit.pack(side="left", fill="both", expand=True)
         self.edit.bind('<Return>', lambda _: self.query())
 
-        self.enter_button = tk.Button(self.enter_frame, text='Relevance Feedback Query', command=self.relevance_feedback_query)
-        self.enter_button.pack(ipady=1, side="left", fill="both", expand=True)
+        self.enter_button = tk.Button(self.enter_frame, text='Relevance Feedback Query', command=self.relevance_feedback_query, width=20)
+        self.enter_button.pack(ipady=1, side="right", fill="y", expand=False)
 
         # listbox
         self.listbox = tk.Listbox(self.root, width=100)
