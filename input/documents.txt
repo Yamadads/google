@@ -1,4 +1,4 @@
-David W. Aha:  Machine Learning Page
+﻿David W. Aha:  Machine Learning Page
 Machine Learning Resources. Suggestions welcome. ... (WizRule); ZDM Scientific
 Ltd. Conference Announcements. Courses on Machine Learning. Data Repositories. ... 
 Description: Comprehensive machine learning resources from Applications to Tutorials.
@@ -376,3 +376,4 @@ The 2002 International Conferences on Machine Learning and Applications The
 Applying a Machine Learning Workbench: Experience with ... 
 Applying a Machine Learning Workbench: Experience with Agricultural Databases Stephen
 R. Garner, Sally Jo Cunningham, Geoffrey Holmes, Craig G. Nevill-Manning ... 
+

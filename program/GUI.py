@@ -4,8 +4,10 @@ import tkinter as tk
 from tkinter import filedialog
 from program.App import App
 from tkinter import messagebox
+from .WordNetManager import WordNetManager
 
 settings_string = "app:settings"
+proposed_queries_no = 5
 
 
 class GUI:
@@ -61,17 +63,40 @@ class GUI:
         self.edit = tk.Entry(self.enter_frame, width=80)
         self.edit.pack(side="left", fill="both", expand=True)
         self.edit.bind('<Return>', lambda _: self.query())
+        # self.edit.bind('<Key>', self.on_edit_key_pressed)
 
-        self.enter_button = tk.Button(self.enter_frame, text='Relevance Feedback Query', command=self.relevance_feedback_query, width=20)
+        self.enter_button = tk.Button(self.enter_frame, text='Relevance Feedback Query',
+                                      command=self.relevance_feedback_query, width=20)
         self.enter_button.pack(ipady=1, side="right", fill="y", expand=False)
 
+        # proposed queries list
+        self.prop_listbox = tk.Listbox(self.root, width=100, height=5)
+        self.prop_listbox.pack(ipady=1, ipadx=1, side="top", fill="x", expand=False)
+        self.prop_listbox.bind('<Double-Button-1>', self.on_select_proposed_query)
+
         # listbox
-        self.listbox = tk.Listbox(self.root, width=100)
-        self.listbox.pack(ipady=1, ipadx=1, side="left", fill="both", expand=True)
+        self.listbox = tk.Listbox(self.root, width=100, height=20)
+        self.listbox.pack(ipady=1, ipadx=1, side="top", fill="both", expand=True)
         self.listbox.bind('<Double-Button-1>', self.on_select_listbox)
 
         self.documents_status = {}
         self.root.mainloop()
+
+    def refresh_proposed_queries(self):
+        if settings_string in self.edit.get():
+            self.prop_listbox.delete(0, tk.END)
+            return
+        query = self.edit.get()
+        proposed_list = WordNetManager.get_list_of_proposed_queries(query, proposed_queries_no)
+        self.prop_listbox.delete(0, tk.END)
+        for i in proposed_list:
+            self.prop_listbox.insert(tk.END, i)
+
+    def on_select_proposed_query(self, event):
+        widget = event.widget
+        selected = int(widget.curselection()[0])
+        self.edit.delete(0, tk.END)
+        self.edit.insert(0, self.prop_listbox.get(selected))
 
     def load_stopwords(self):
         try:
@@ -176,7 +201,7 @@ class GUI:
         widget = event.widget
         list_index = int(widget.curselection()[0])
         document_index = list_index - 2
-        if list_index <2:
+        if list_index < 2:
             return
         (doc_title, value, status) = self.documents_status[document_index]
         if status == 'not_selected':
@@ -190,6 +215,7 @@ class GUI:
             self.documents_status[document_index] = (doc_title, value, 'not_selected')
 
     def query(self):
+        self.refresh_proposed_queries()
         try:
             if self.edit.get() == "":
                 return
@@ -211,7 +237,8 @@ class GUI:
             if settings_string in self.edit.get():
                 return
             else:
-                query_result, self.documents_status = self.app.relevance_feedback_query(self.edit.get(), self.documents_status)
+                query_result, self.documents_status = self.app.relevance_feedback_query(self.edit.get(),
+                                                                                        self.documents_status)
                 self.fill_listbox(query_result, "Search results")
         except Exception as e:
             messagebox.showinfo("Error", e)
