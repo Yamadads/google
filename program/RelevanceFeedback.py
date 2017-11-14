@@ -43,6 +43,10 @@ class RelevanceFeedback:
 
         def prepare_new_query_bag_words(query, good_docs, bad_docs):
             new_query = {}
+            for key, value in good_docs.items():
+                new_query[key] = 0
+            for key, value in bad_docs.items():
+                new_query[key] = 0
             for key, value in query.items():
                 new_query[key] = settings.get_settings_value('alpha') * value
             for key, value in good_docs.items():

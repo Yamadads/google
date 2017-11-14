@@ -1,6 +1,10 @@
+import re
+
+
 class Settings:
     def __init__(self):
-        self.settings_map = {'alpha': 1.0, 'beta': 0.75, 'gamma': 0.15}
+        self.settings_map = {'mode': 'k-means', 'k': 9, 'i': 10, 'alpha': 1.0, 'beta': 0.75,
+                             'gamma': 0.15}  # k-means,tfidf+
 
     def get_settings_value(self, key):
         if key in self.settings_map:
@@ -19,7 +23,13 @@ class Settings:
         for token in tokens[1:]:
             key_value = token.split(":")
             if len(key_value) == 2:
-                self.set_settings_value(key_value[0], key_value[1])
+                if self.is_integer(key_value[1]):
+                    self.set_settings_value(key_value[0], int(key_value[1]))
+                elif self.is_float(key_value[1]):
+                    self.set_settings_value(key_value[0], float(key_value[1]))
+                else:
+                    self.set_settings_value(key_value[0], key_value[1])
+
         return self.get_settings_list()
 
     def get_settings_list(self):
@@ -27,3 +37,19 @@ class Settings:
         for key, value in self.settings_map.items():
             settings_list.append(key + " : " + str(value))
         return settings_list
+
+    @staticmethod
+    def is_float(s):
+        try:
+            float(s)
+            return True
+        except ValueError:
+            return False
+
+    @staticmethod
+    def is_integer(s):
+        try:
+            int(s)
+            return True
+        except ValueError:
+            return False

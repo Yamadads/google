@@ -52,6 +52,10 @@ class GUI:
                                               command=self.show_documents)
         self.get_documents_button.pack(side="left", fill="both", expand=True)
 
+        self.group_documents_button = tk.Button(self.buttons_frame, text='Group \ndocuments',
+                                   command=self.group_documents)
+        self.group_documents_button.pack(side="left", fill="both", expand=True)
+
         self.save_file = tk.Button(self.buttons_frame, text='Save list',
                                    command=self.save_file)
         self.save_file.pack(side="left", fill="both", expand=True)
@@ -240,6 +244,14 @@ class GUI:
                 query_result, self.documents_status = self.app.relevance_feedback_query(self.edit.get(),
                                                                                         self.documents_status)
                 self.fill_listbox(query_result, "Search results")
+        except Exception as e:
+            messagebox.showinfo("Error", e)
+            print(str(e))
+
+    def group_documents(self):
+        try:
+            self.fill_listbox(self.app.group_documents(), "Grouped documents")
+            self.documents_status = {}
         except Exception as e:
             messagebox.showinfo("Error", e)
             print(str(e))

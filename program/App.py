@@ -4,11 +4,12 @@ from program.TFIDF import TFIDF
 from program.QueryHandler import QueryHandler
 from program.Settings import Settings
 from program.RelevanceFeedback import RelevanceFeedback
-
+from program.KMeans import KMeans
 
 class App:
     def __init__(self):
         self.documents = {}
+        self.documents_groups = {}
         self.transformed_documents = {}
         self.terms = []
         self.transformed_terms = []
@@ -27,7 +28,12 @@ class App:
     def load_documents(self, filename):
         if not self.terms:
             raise Exception("Please load terms first")
-        self.documents = DocumentsLoader.load_documents(filename)
+        if self.settings.get_settings_value('mode') == 'k-means':
+            self.documents, self.documents_groups = DocumentsLoader.load_documents_kmeans(filename)
+        elif self.settings.get_settings_value('mode') == 'tf-idf':
+            self.documents = DocumentsLoader.load_documents(filename)
+        else:
+            raise Exception("Wrong working mode. Check app:settings. mode must be equal to k-means or tf-idf")
         self.transformed_documents = DocumentsLoader.transform_documents(self.documents, self.stopwords)
         self.tfidf, self.documents_vec_len, self.idf_terms = TFIDF.create_tfidf(self.transformed_terms,
                                                                                 self.transformed_documents)
@@ -96,3 +102,8 @@ class App:
                 bad_docs.append(doc_title)
         new_query = RelevanceFeedback.create_new_query(query, good_docs, bad_docs, self.settings, self.transformed_documents, self.stopwords, self.idf_terms)
         return QueryHandler.query(None, self.tfidf, self.documents_vec_len, self.stopwords, self.idf_terms, new_query)
+
+    def group_documents(self):
+        if self.documents == {}:
+            raise Exception("Documents list is empty")
+        return KMeans.get_groups(self.settings.get_settings_value('k'), self.settings.get_settings_value('i'),self.documents, self.documents_vec_len, self.documents_groups, self.tfidf)
